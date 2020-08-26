@@ -5884,10 +5884,22 @@ three-stl-loader@^1.0.6:
   resolved "https://registry.npm.taobao.org/three-stl-loader/download/three-stl-loader-1.0.6.tgz#b66240f819300eee88928251937587c3fb4262c1"
   integrity sha1-tmJA+BkwDu6IkoJRk3WHw/tCYsE=
 
+three-stlexporter@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/three-stlexporter/download/three-stlexporter-1.0.0.tgz#ecf5d26f2a07450dd9813576fb84b2b545895e5d"
+  integrity sha1-7PXSbyoHRQ3ZgTV2+4SytUWJXl0=
+  dependencies:
+    three "^0.79.0"
+
 three@^0.118.3:
   version "0.118.3"
   resolved "https://registry.npm.taobao.org/three/download/three-0.118.3.tgz#c0bf8c10a68155478f12f4ccac2ff979526a4a0a"
   integrity sha1-wL+MEKaBVUePEvTMrC/5eVJqSgo=
+
+three@^0.79.0:
+  version "0.79.0"
+  resolved "https://registry.npm.taobao.org/three/download/three-0.79.0.tgz#3af96fda47f68b7ab093c298dfa335fa45da0cf4"
+  integrity sha1-Ovlv2kf2i3qwk8KY36M1+kXaDPQ=
 
 through2@^2.0.0:
   version "2.0.5"
