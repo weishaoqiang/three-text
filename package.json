@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server"
+    "dev": "webpack-dev-server",
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC",
@@ -28,7 +29,6 @@
     "three": "^0.118.3",
     "three-effectcomposer": "^0.0.1",
     "three-orbitcontrols": "^2.110.3",
-    "three-stl-loader": "^1.0.6",
-    "three-stlexporter": "^1.0.0"
+    "three-stl-loader": "^1.0.6"
   }
 }

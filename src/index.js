@@ -1,14 +1,17 @@
 import './style/index.scss'
 import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
-import STLExporter from 'three-stlexporter'
+import { STLExporter } from 'three/examples/jsm/exporters/STLExporter'
 let STLLoader = require('three-stl-loader')(THREE)
 
 let scene = new THREE.Scene() // 创建空场
 // 创建渲染元素
 let width = window.innerWidth //窗口宽度
 let height = window.innerHeight //窗口高度
-let renderer = new THREE.WebGLRenderer()
+let renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  alpha: true
+})
 renderer.setSize(width, height) //设置渲染区域尺寸
 renderer.setClearColor(0xf8f9fc, 1) //设置背景颜色
 
@@ -16,15 +19,15 @@ renderer.setClearColor(0xf8f9fc, 1) //设置背景颜色
 function createCamera() {
   let width = window.innerWidth; //窗口宽度
   let height = window.innerHeight; //窗口高度
-  let camera = new THREE.PerspectiveCamera(35, width / height, 1, 10000)
+  let camera = new THREE.PerspectiveCamera(10, width / height, 1, 10000)
   camera.position.set(200, 300, 200); //设置相机位置
   camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
   return camera
 }
 
 let textOptions = {
-  text: '请输入你的文字',
-  distance: 0,
+  text: 'TEXT',
+  distance: 1,
   size: 3.2,
   thick: 0.5
 }
@@ -33,7 +36,7 @@ let textOptions = {
 const addAxis = function () {
   return new THREE.AxesHelper(200, 200, 200)
 }
-scene.add(addAxis())
+// scene.add(addAxis())
 
 // 添加stl模型
 function loadStl(url) {
@@ -49,12 +52,20 @@ function loadStl(url) {
   })
 }
 
+// loadStl('./lib/platformA2D.stl').then(geometry => {
+//   const material = new THREE.MeshBasicMaterial()
+//   const mesh = new THREE.Mesh(geometry, material)
+//   scene.add(mesh)
+//   render()
+// })
+
+
 // 加载文字模型
 function loadText(opstions) {
   const textArray = opstions.text.split('')
   const loader = new THREE.FontLoader()
   const outGeometry = new THREE.Geometry()
-  const textMaterial = new THREE.MeshBasicMaterial({ color: 0x999999 })
+  const textMaterial = new THREE.MeshBasicMaterial()
   let curX = 0, textlen = 0, startx = 0
   return new Promise((resolve, reject) => {
     loader.load('./lib/fonts/typeface.json', font => {
@@ -69,7 +80,7 @@ function loadText(opstions) {
         textlen = max.x - min.x
         const mesh = new THREE.Mesh(geometry, textMaterial)
         if (i > 0) {
-          startx = curX + (opstions.distance || 1)
+          startx = curX + opstions.distance
         } else {
           startx = 0
         }
@@ -88,8 +99,13 @@ function GenerateText() {
     scene.remove(...scene.children.filter(item => item instanceof THREE.Mesh))
   }
   loadText(textOptions).then(geometry => {
-    const material = new THREE.MeshBasicMaterial({ color: 0x999999 })
+    var texture = new THREE.TextureLoader().load('./lib/images.jpeg');
+    const material = new THREE.MeshMatcapMaterial({
+      matcap: texture
+    })
+    geometry.center()
     const mesh = new THREE.Mesh(geometry, material)
+    mesh.name = 'exportText'
     scene.add(mesh)
     render()
   })
@@ -133,13 +149,12 @@ function InitPageEvent() {
 
 // 导出字体
 function exportText() {
-  const sceneCopy = scene.clone()
-  const exportMesh = sceneCopy.children.find(item => !(item instanceof THREE.Mesh))
-  sceneCopy.remove(exportMesh)
-  const exporter = new STLExporter()
-  const exportResult = exporter.parse(sceneCopy)
+  const tempMesh = scene.children.filter(item => item instanceof THREE.Mesh)
+  let copyScene = scene.clone()
+  copyScene.children = tempMesh
+  const exportResult = new STLExporter().parse(copyScene)
   const blob = new Blob([exportResult], { type: 'text/plain' })
-  downloadFile(`${new Date().getTime()}.stl`, blob)
+  downloadFile(`${textOptions.text}.stl`, blob)
 }
 
 function setFontAttr(key, value) {
